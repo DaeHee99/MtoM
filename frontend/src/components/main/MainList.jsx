@@ -1,4 +1,5 @@
 import { StarIcon } from "@heroicons/react/20/solid";
+import { useNavigate } from "react-router-dom";
 
 const cards = [
   {
@@ -123,8 +124,14 @@ export default function MainList() {
 }
 
 function Card({ postId, title, major, grade, star, userNickname, userProfile }) {
+  const navigate = useNavigate();
+
+  const onCardClick = () => {
+    navigate(`/mentoring/${postId}`);
+  };
+
   return (
-    <div className="p-4 border border-stone-200 shadow rounded-md bg-white cursor-pointer">
+    <div className="p-4 border border-stone-200 shadow rounded-md bg-white cursor-pointer" onClick={onCardClick}>
       <h1 className="text-xl font-bold pb-2">{title}</h1>
       <p className="text-stone-600">학과 : {major}</p>
       <p className="text-stone-600">학년 : {grade}학년</p>
