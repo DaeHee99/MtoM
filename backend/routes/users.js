@@ -81,8 +81,7 @@ router.post('/mentor', async function(req, res, next) {
     if(!major) return res.status(400).send(/*"major 입력해주세요."*/false)
     if(!email) return res.status(400).send(/*"email 입력해주세요."*/false)
 
-    let user = await model.find({userID: req.session.user.userID, password: req.session.user.password})
-    user.mentor = true
+    let user = await model.update({userID: req.session.user.userID, password: req.session.user.password},{mentor:true, grade: grade, major: major, email: email})
     req.session.user.mentor = true
 
     res.status(200).send(true)
