@@ -39,6 +39,15 @@ router.use(express_session({
 }))
 
 /* GET users listing. */
+router.get('/auth/check', async function (req,res,next) {
+  //console.log(req.session.user);
+  if(req.session.user.mentor){
+    return res.status(200).send({role: "mentor"})
+  }
+  else
+    return res.status(200).send({role: "mentee"})
+})
+
 router.get('/logout', async function (req,res,next) {
   if(req.session.user){
     req.session.destroy()
@@ -50,17 +59,16 @@ router.get('/logout', async function (req,res,next) {
 
 router.post('/login', async function(req, res, next) {
   const {userID, password} = req.body
-  console.log(userID)
   let user = await model.find({userID: userID, password: password})
-  console.log(user)
+  //console.log(user)
   if (user.length == 0) return res.status(400).send(/*"아이디 또는 비밀번호가 일치하지 않습니다."*/false)
 
   if (!req.session.user){
     req.session.user = {
       userID: userID,
       password: password,
-      nickname: user.nickname,
-      mentor: user.mentor,
+      nickname: user[0].nickname,
+      mentor: user[0].mentor,
       authorized: true,
     };
   }
