@@ -15,7 +15,7 @@ export default function Header() {
     navigater("/mypage/1");
   };
   const [isOpen, setIsOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
 
   return (
     <header className="sticky top-0 py-3 border-b border-stone-900 bg-white">
