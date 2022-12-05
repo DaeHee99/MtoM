@@ -11,7 +11,11 @@ export default function Header() {
   const onLogoClick = () => {
     navigater("/");
   };
+  const onMyPageClick = () => {
+    navigater("/mypage/1");
+  };
   const [isOpen, setIsOpen] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
 
   return (
     <header className="sticky top-0 py-3 border-b border-stone-900 bg-white">
@@ -21,8 +25,17 @@ export default function Header() {
           <span className="text-stone-900">MtoM</span>
         </div>
         <div className="flex items-center justify-center space-x-2">
-          <Button onClick={() => setIsOpen(true)}>로그인</Button>
-          <Button onClick={onRegistClick}>회원가입</Button>
+          {isLogin ? (
+            <>
+              <span>아무개님!</span>
+              <Button onClick={onMyPageClick}>마이페이지</Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={() => setIsOpen(true)}>로그인</Button>
+              <Button onClick={onRegistClick}>회원가입</Button>
+            </>
+          )}
         </div>
       </div>
       <LoginModal isOpen={isOpen} setIsOpen={setIsOpen}></LoginModal>
