@@ -2,10 +2,9 @@ var express = require('express');
 var router = express.Router();
 const mongoose = require("mongoose")
 const express_session = require('express-session')
-//const sessionSecret = require('../config/development')
 const MongoStore = require('connect-mongo')
 const nodemailer = require('nodemailer');
-const {googleSecret, sessionSecret} = require('../config/secret');
+const {googleSecret, sessionSecret} = require('../config/secret')
 
 const websystemPj = new mongoose.Schema({
   userID: String,
@@ -16,6 +15,7 @@ const websystemPj = new mongoose.Schema({
   major: String,
   email: String,
   mentor: Boolean,
+  code: String,
 })
 
 let status
@@ -74,20 +74,16 @@ router.post('/login', async function(req, res, next) {
     };
   }
   console.log(req.session)
-
-
   return res.status(200).send(true)
 });
 
-router.post('/mentor', async function(req, res, next) {
-  const {grade, major, email} = req.body
+router.post('/email', async function(req, res, next) {
+  const {email} = req.body
 
   let useremail = await model.find({email: email})
   if (useremail.length >0) return res.status(400).send(/*"이미 존재하는 회원입니다."*/false)
 
   try{
-    if(!grade) return res.status(400).send(/*"grade 입력해주세요."*/false)
-    if(!major) return res.status(400).send(/*"major 입력해주세요."*/false)
     if(!email) return res.status(400).send(/*"email 입력해주세요."*/false)
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -117,10 +113,33 @@ router.post('/mentor', async function(req, res, next) {
     if (code != code)
       return res.status(400).send(/*인증번호가 틀렸습니다.*/false)
 
-    //let user = await model.update({userID: req.session.user.userID, password: req.session.user.password},{mentor:true, grade: grade, major: major, email: email})
-    //req.session.user.mentor = true
+    let user = await model.update({userID: req.session.user.userID, password: req.session.user.password},{code: code})
+    res.status(200).send({result: true})
+  }catch(err){
+    res.status(500).send({result: false})
+  }
 
-    res.status(200).send(true)
+});
+
+router.post('/mentor', async function(req, res, next) {
+  const {grade, major, email, code} = req.body
+
+  let useremail = await model.find({email: email})
+  if (useremail.length >0) return res.status(400).send(/*"이미 존재하는 회원입니다."*/false)
+
+  try{
+    if(!grade) return res.status(400).send(/*"grade 입력해주세요."*/{result: false,message:"grade 입력해주세요."})
+    if(!major) return res.status(400).send(/*"major 입력해주세요."*/{result: false,message:"major 입력해주세요."})
+    if(!email) return res.status(400).send(/*"email 입력해주세요."*/{result: false,message:"email 입력해주세요."})
+
+    let emailUser = await model.find({userID: req.session.user.userID, password: req.session.user.password})
+    if (code != emailUser[0].code)
+      return res.status(400).send({result: false,message:"인증번호가 일치하지 않습니다."})
+
+    let user = await model.update({userID: req.session.user.userID, password: req.session.user.password},{mentor:true, grade: grade, major: major, email: email})
+    req.session.user.mentor = true
+
+    res.status(200).send({result:true, nickname : req.session.user.nickname})
   }catch(err){
     res.status(500).send(false)
   }
@@ -149,7 +168,5 @@ router.post('/', async function(req, res, next) {
   }
 
 });
-
-
 
 module.exports = router;
