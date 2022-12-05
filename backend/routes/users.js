@@ -40,6 +40,7 @@ router.use(express_session({
 }))
 
 /* GET users listing. */
+/*
 router.get('/auth/check', async function (req,res,next) {
   //console.log(req.session.user);
   if(req.session.user.mentor){
@@ -48,7 +49,7 @@ router.get('/auth/check', async function (req,res,next) {
   else
     return res.status(200).send({role: "mentee"})
 })
-
+*/
 router.get('/logout', async function (req,res,next) {
   if(req.session.user){
     req.session.destroy()
@@ -128,18 +129,18 @@ router.post('/mentor', async function(req, res, next) {
   if (useremail.length >0) return res.status(400).send(/*"이미 존재하는 회원입니다."*/false)
 
   try{
-    if(!grade) return res.status(400).send(/*"grade 입력해주세요."*/{result: false,message:"grade 입력해주세요."})
-    if(!major) return res.status(400).send(/*"major 입력해주세요."*/{result: false,message:"major 입력해주세요."})
-    if(!email) return res.status(400).send(/*"email 입력해주세요."*/{result: false,message:"email 입력해주세요."})
+    if(!grade) return res.status(400).send(/*"grade 입력해주세요."*/{mentor: false,message:"grade 입력해주세요."})
+    if(!major) return res.status(400).send(/*"major 입력해주세요."*/{mentor: false,message:"major 입력해주세요."})
+    if(!email) return res.status(400).send(/*"email 입력해주세요."*/{mentor: false,message:"email 입력해주세요."})
 
     let emailUser = await model.find({userID: req.session.user.userID, password: req.session.user.password})
     if (code != emailUser[0].code)
-      return res.status(400).send({result: false,message:"인증번호가 일치하지 않습니다."})
+      return res.status(400).send({mentor: false,message:"인증번호가 일치하지 않습니다."})
 
     let user = await model.update({userID: req.session.user.userID, password: req.session.user.password},{mentor:true, grade: grade, major: major, email: email})
     req.session.user.mentor = true
 
-    res.status(200).send({result:true, nickname : req.session.user.nickname})
+    res.status(200).send({mentor:true, nickname : req.session.user.nickname})
   }catch(err){
     res.status(500).send(false)
   }
