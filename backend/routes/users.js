@@ -5,7 +5,7 @@ const express_session = require('express-session')
 //const sessionSecret = require('../config/development')
 const MongoStore = require('connect-mongo')
 const nodemailer = require('nodemailer');
-const {googleSecret, sessionSecret} = require('../config/secret')
+const {googleSecret, sessionSecret} = require('../config/secret');
 
 const websystemPj = new mongoose.Schema({
   userID: String,

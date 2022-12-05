@@ -10,9 +10,26 @@ const postingSchema = new mongoose.Schema({
     userNickname : String,
     userProfile : String,
     grade : String,
-    star : Number,
-    date : Date
+    star : String,
+    mentorNickName : String,
+	  mentorProfileImage : String,
+	  mentorgrade : String,
+	  mentormajor : String,
+    date : Date,
 })
+
+const userSchema = new mongoose.Schema({
+  userID: String,
+  nickname: String,
+  password: String,
+  profileImage: String,
+  grade: String,
+  major: String,
+  email: String,
+  mentor: Boolean,
+})
+
+const userModel = mongoose.model("users",userSchema);
 
 const postingModel = mongoose.model('postings', postingSchema);
 
@@ -28,16 +45,22 @@ router.put('/:post_id', function(req, res, next) {
                 let check = await postingModel.findOne({postId : randomId});
                 if(!check) break;
             }
+            
+            const user = await userModel.findOne({userID : req.session.user.userID});
 
             postingModel.create({
                 postId : randomId,
                 title : req.body.title,
                 content : req.body.content,
                 category: req.body.category,
-                // userNickname : req.body.,
-                // userProfile : req.body.,
-                // grade : req.body.,
-                // star : req.body.,
+                userNickname : req.session.user.nickname,
+                userProfile : user.profileImage,
+                grade : user.grade,
+                mentorNickName : req.session.user.nickname,
+                mentorProfileImage : user.profileImage,
+                mentorgrade : user.grade,
+                mentormajor : user.major,
+                star : "0",
                 date: new Date()
             }, function(err) {
                 if(err) res.status(500).send(false);
@@ -79,7 +102,7 @@ router.get('/', function(req, res, next) {
             result = await postingModel.find({category : targetCategory}).sort({ "date": -1 });
         }
 
-        if(result) res.send({content: result, totalNum: result.length});
+        if(result) res.send({contents: result, totalNum: result.length});
         else res.status(404).send(false);
       },
       err => { res.status(500).send("error : DB is not connected."); }

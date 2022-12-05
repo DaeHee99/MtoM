@@ -3,6 +3,7 @@ var router = express.Router();
 const mongoose = require('mongoose');
 
 const commentSchema = new mongoose.Schema({
+    userId : String,
     commentId : String,
     postingIdx : Number,
     userIdx : Number,
@@ -25,6 +26,7 @@ router.post('/', function(req, res, next) {
         }
         
         commentModel.create({
+            userId : req.session.user.userID,
             commentId : randomId,
             postingIdx : req.body.postingIdx,
             userIdx : req.body.userIdx,
@@ -79,7 +81,7 @@ router.delete('/:commentIdx', function(req, res, next) {
 router.get('/', function(req, res, next) {
     mongoose.connect("mongodb://localhost:27017/websystemPj").then(
         async () => {
-        const result = await commentModel.find({userIdx : req.params.userId});
+        const result = await commentModel.find({userId : req.session.user.userId});
   
         if(result) res.status(200).send(result);
         else res.status(404).send(false);
