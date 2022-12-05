@@ -1,10 +1,11 @@
-
 var express = require('express');
 var router = express.Router();
 const mongoose = require("mongoose")
 const express_session = require('express-session')
-const sessionSecret = require('../config/development')
+//const sessionSecret = require('../config/development')
 const MongoStore = require('connect-mongo')
+const nodemailer = require('nodemailer');
+const {googleSecret, sessionSecret} = require('../config/secret');
 
 const websystemPj = new mongoose.Schema({
   userID: String,
@@ -31,7 +32,7 @@ const connectDB = async function(req,res,next){
 const model = mongoose.model("Users",websystemPj)
 router.use(connectDB)
 router.use(express_session({
-  secret: "thisissessionSecret",
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/websystemPj"}),
@@ -88,9 +89,36 @@ router.post('/mentor', async function(req, res, next) {
     if(!grade) return res.status(400).send(/*"grade 입력해주세요."*/false)
     if(!major) return res.status(400).send(/*"major 입력해주세요."*/false)
     if(!email) return res.status(400).send(/*"email 입력해주세요."*/false)
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: '9659tig@gmail.com',
+          pass: googleSecret
+      }
+    });
 
-    let user = await model.update({userID: req.session.user.userID, password: req.session.user.password},{mentor:true, grade: grade, major: major, email: email})
-    req.session.user.mentor = true
+    const code = Math.floor(Math.random() * 1000000);
+    const mailOptions = {
+      from: '9659tig@gmail.com',
+      to: email,
+      subject: '이메일 인증 코드',
+      text: `인증 코드는 ${code} 입니다.`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+          console.log(error);
+      } else {
+          console.log('Email sent: ' + info.response);
+          transporter.close()
+      }
+    });
+
+    if (code != code)
+      return res.status(400).send(/*인증번호가 틀렸습니다.*/false)
+
+    //let user = await model.update({userID: req.session.user.userID, password: req.session.user.password},{mentor:true, grade: grade, major: major, email: email})
+    //req.session.user.mentor = true
 
     res.status(200).send(true)
   }catch(err){
