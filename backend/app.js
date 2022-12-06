@@ -7,6 +7,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var postingsRouter = require('./routes/postings');
 var commentRouter = require('./routes/comment');
+var mypageRouter = require('./routes/mypage');
 
 var app = express();
 
@@ -17,8 +18,9 @@ app.use(cookieParser('secret'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/postings', postingsRouter);
-app.use('/comment', commentRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/postings', postingsRouter);
+app.use('/api/comment', commentRouter);
+app.use('/api/mypage', mypageRouter);
 
 module.exports = app;
