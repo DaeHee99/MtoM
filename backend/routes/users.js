@@ -63,7 +63,7 @@ router.post('/login', async function(req, res, next) {
   const {userID, password} = req.body
   let user = await model.find({userID: userID, password: password})
   //console.log(user)
-  if (user.length == 0) return res.status(400).send(/*"아이디 또는 비밀번호가 일치하지 않습니다."*/false)
+  if (user.length == 0) return res.status(400).send({message:"아이디 또는 비밀번호가 일치하지 않습니다."})
 
   if (!req.session.user){
     req.session.user = {
@@ -74,8 +74,27 @@ router.post('/login', async function(req, res, next) {
       authorized: true,
     };
   }
-  console.log(req.session)
-  return res.status(200).send(true)
+  else{
+    console.log("exist",req.session.user)
+    if (req.session.user.userID === userID){
+      return res.status(400).send({
+        mentor : req.session.user.mentor,
+        nickname : req.session.user.nickname,
+        message: "이미 로그인 된 계정입니다"
+      })
+    }
+    req.session.user = {
+      userID: userID,
+      password: password,
+      nickname: user[0].nickname,
+      mentor: user[0].mentor,
+      authorized: true,
+    };
+  }
+  return res.status(200).send({
+    mentor : user[0].mentor,
+    nickname : user[0].nickname
+  })
 });
 
 router.post('/email', async function(req, res, next) {
