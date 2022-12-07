@@ -2,11 +2,22 @@ var express = require('express');
 var router = express.Router();
 const mongoose = require('mongoose');
 
+const express_session = require('express-session');
+const MongoStore = require('connect-mongo');
+const {sessionSecret} = require('../config/secret');
+
+router.use(express_session({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/websystemPj"}),
+  cookie:{maxAge:(3.6e+6)*24*14}
+}))
+
 const commentSchema = new mongoose.Schema({
-    userID : String,
+    userId : String,
     commentId : String,
-    postingIdx : Number,
-    userIdx : Number,
+    postingId : String,
     content : String,
     star : Number
 })
@@ -26,10 +37,9 @@ router.post('/', function(req, res, next) {
         }
         
         commentModel.create({
-            userID : req.session.user.userID,
+            userId : req.session.user.userID,
             commentId : randomId,
-            postingIdx : req.body.postingIdx,
-            userIdx : req.body.userIdx,
+            postingId : req.body.postingId,
             content : req.body.content,
             star : req.body.star
         }, function(err) {
@@ -47,9 +57,9 @@ router.post('/', function(req, res, next) {
 router.get('/:post_id', function(req, res, next) {
     mongoose.connect("mongodb://localhost:27017/websystemPj").then(
         async () => {
-        const result = await commentModel.find({postingIdx : req.params.post_id});
+        const result = await commentModel.find({postingId : req.params.post_id});
   
-        if(result) res.status(200).send(result);
+        if(result) res.status(200).send({contents: result, totalNum: result.length});
         else res.status(404).send(false);
     },
       err => { res.status(500).send("error : DB is not connected."); }
@@ -57,17 +67,17 @@ router.get('/:post_id', function(req, res, next) {
 });
 
 
-/* DELETE /comments/:commentIdx */
-router.delete('/:commentIdx', function(req, res, next) {
+/* DELETE /comment/:commentId */
+router.delete('/:commentId', function(req, res, next) {
     mongoose.connect("mongodb://localhost:27017/websystemPj").then(
       async () => {
-        const check = await commentModel.findOne({commentId : req.params.commentIdx});
+        const check = await commentModel.findOne({commentId : req.params.commentId});
         if(!check) {
           res.status(404).send(false);
           return;
         }
   
-        commentModel.deleteOne({commentId : req.params.commentIdx}, function(err) {
+        commentModel.deleteOne({commentId : req.params.commentId}, function(err) {
           if(err) res.status(500).send(false);
           else res.status(200).send(true);
         })
@@ -81,8 +91,8 @@ router.delete('/:commentIdx', function(req, res, next) {
 router.get('/', function(req, res, next) {
     mongoose.connect("mongodb://localhost:27017/websystemPj").then(
         async () => {
-        const result = await commentModel.find({userID : req.params.userId, postingIdx: req.params.postId});
-  
+        const result = await commentModel.find({userId : req.params.userId, postingId: req.params.postingId});
+        
         if(result) res.status(200).send(result);
         else res.status(404).send(false);
     },
