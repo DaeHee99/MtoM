@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/common/Button";
 import { useState } from "react";
 import LoginModal from "./LoginModal";
+import { logoutApi } from "../api/authApi";
 
 export default function Header() {
   const navigater = useNavigate();
@@ -14,8 +15,18 @@ export default function Header() {
   const onMyPageClick = () => {
     navigater("/mypage/1");
   };
+  const onLogout = async () => {
+    const result = await logoutApi();
+    if (result) {
+      alert("로그아웃 성공");
+      localStorage.clear();
+      navigater(0);
+    } else {
+      alert("에러발생");
+    }
+  };
   const [isOpen, setIsOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(false);
+  const nickname = localStorage.getItem("nickname");
 
   return (
     <header className="sticky top-0 py-3 border-b border-stone-900 bg-white">
@@ -25,10 +36,11 @@ export default function Header() {
           <span className="text-stone-900">MtoM</span>
         </div>
         <div className="flex items-center justify-center space-x-2">
-          {isLogin ? (
+          {nickname ? (
             <>
-              <span>아무개님!</span>
+              <span>{nickname}님!</span>
               <Button onClick={onMyPageClick}>마이페이지</Button>
+              <Button onClick={onLogout}>로그아웃</Button>
             </>
           ) : (
             <>

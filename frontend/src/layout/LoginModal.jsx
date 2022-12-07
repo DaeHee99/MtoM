@@ -16,6 +16,9 @@ export default function LoginModal({ isOpen, setIsOpen }) {
     const result = await loginApi(data);
     if (result) {
       alert("로그인에 성공했습니다.");
+      console.log(result);
+      localStorage.setItem("isMentor", result.mentor);
+      localStorage.setItem("nickname", result.nickname);
       navigate(0);
     } else {
       alert("다시 입력하세요.");

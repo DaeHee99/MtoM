@@ -75,7 +75,10 @@ router.post("/login", async function (req, res, next) {
     };
   }
   console.log(req.session);
-  return res.status(200).send(true);
+  return res.status(200).send({
+    nickname: user[0].nickname,
+    mentor: user[0].mentor,
+  });
 });
 
 router.post("/email", async function (req, res, next) {

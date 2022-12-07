@@ -1,6 +1,5 @@
 import client from "./client";
 import axiosCase from "./axiosCase";
-import axios from "axios";
 
 export const loginApi = (elem) =>
   axiosCase(
