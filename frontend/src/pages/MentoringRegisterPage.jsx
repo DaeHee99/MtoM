@@ -13,6 +13,7 @@ export default function MentoringRegisterPage() {
 
   const onSubmit = async (data) => {
     const result = await mentoringCreateApi(data);
+    console.log(result);
     if (result) navigate("/");
     else alert("오류발생!");
   };

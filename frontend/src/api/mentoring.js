@@ -28,3 +28,10 @@ export const mentoringCreateApi = (elem) =>
       },
     })
   );
+
+export const mentoringListApi = (elem) =>
+  axiosCase(
+    client.get("/api/postings", {
+      params: elem,
+    })
+  );
