@@ -3,13 +3,11 @@ import { useState } from "react";
 import Button from "../common/Button";
 import ReviewModal from "./ReviewModal";
 
-export default function MentoringView() {
-  const [isMentee, setIsMentee] = useState(true);
-
+export default function MentoringView({ isMentor }) {
   return (
     <section className="w-full border border-gray-100 shadow-md px-5 py-5 min-h-[30rem] rounded-md">
-      <h2 className="text-3xl font-semibold">{isMentee ? "내가 신청한 멘토들" : "멘토링 관리"}</h2>
-      {isMentee ? <MenteePart /> : <MentorPart />}
+      <h2 className="text-3xl font-semibold">{isMentor ? "내가 신청한 멘토들" : "멘토링 관리"}</h2>
+      {!isMentor ? <MenteePart /> : <MentorPart />}
     </section>
   );
 }

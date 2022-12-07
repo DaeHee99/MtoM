@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../common/Button";
 
-export default function ProfileView() {
-  const [isMentee, setIsMentee] = useState(true);
+export default function ProfileView({ isMentor }) {
   const navigate = useNavigate();
 
   const onMentorRegistClick = () => {
@@ -17,18 +15,18 @@ export default function ProfileView() {
       </figure>
       <h2 className="text-3xl font-bold text-stone-700 pt-6">Cuzz</h2>
       <div className="w-full px-3 pt-3 text-stone-500 pb-6 max-w-sm m-auto">
-        {isMentee ? (
-          <></>
-        ) : (
+        {isMentor ? (
           <>
             <p>학년 : 4학년</p>
             <p>학과 : 소프트웨어학과</p>
             <p>이메일 : rygus9@naver.com</p>
           </>
+        ) : (
+          <></>
         )}
       </div>
       <div className="flex items-center space-x-2">
-        {isMentee && <Button onClick={onMentorRegistClick}>멘토신청</Button>}
+        {!isMentor && <Button onClick={onMentorRegistClick}>멘토신청</Button>}
         <Button>수정하기</Button>
       </div>
     </section>

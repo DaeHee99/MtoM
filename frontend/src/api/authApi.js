@@ -11,11 +11,10 @@ export const loginApi = (elem) =>
   );
 
 export const registApi = (elem) => {
-  console.log("오긴하냐?");
   return axiosCase(
     client.post("/api/users", elem, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     })
   );

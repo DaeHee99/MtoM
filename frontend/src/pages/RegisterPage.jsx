@@ -12,7 +12,10 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data) => {
-    const result = await registApi({ ...data, profileImage: "/mentoring.jpeg" });
+    const frm = new FormData();
+    Object.entries(data).map((line) => frm.append(line[0], line[1]));
+    console.log([...frm.entries()]);
+    const result = await registApi(frm);
     if (result) navigate("/");
     else alert("오류발생!");
   };
@@ -32,7 +35,7 @@ export default function RegisterPage() {
           ></TextInput>
           <div>
             <div className="text-left text-stone-700 pb-2 text-lg">프로필 이미지</div>
-            <FileInput id="이미지" control={control} name="profileImage" type="avatar"></FileInput>
+            <FileInput id="이미지" control={control} name="ProfileImage" type="avatar"></FileInput>
           </div>
           <Button type="submit">회원가입하기</Button>
         </form>

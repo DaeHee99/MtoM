@@ -20,7 +20,7 @@ export default function Header() {
     if (result) {
       alert("로그아웃 성공");
       localStorage.clear();
-      navigater(0);
+      navigater("/");
     } else {
       alert("에러발생");
     }
