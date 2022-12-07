@@ -1,125 +1,19 @@
 import { StarIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 
-const cards = [
-  {
-    postId: "1",
-    title: "안녕하세요 구교현입니다.",
-    major: "소프트웨어학과",
-    grade: "4",
-    star: "4.5",
-    userNickname: "gugu",
-    userProfile: "/mentoring.jpeg",
-  },
-  {
-    postId: "2",
-    title: "안녕하세요 구교현입니다.",
-    major: "소프트웨어학과",
-    grade: "4",
-    star: "4.5",
-    userNickname: "gugu",
-    userProfile: "/mentoring.jpeg",
-  },
-  {
-    postId: "3",
-    title: "안녕하세요 구교현입니다.",
-    major: "소프트웨어학과",
-    grade: "4",
-    star: "4.5",
-    userNickname: "gugu",
-    userProfile: "/mentoring.jpeg",
-  },
-  {
-    postId: "4",
-    title: "안녕하세요 구교현입니다.",
-    major: "소프트웨어학과",
-    grade: "4",
-    star: "4.5",
-    userNickname: "gugu",
-    userProfile: "/mentoring.jpeg",
-  },
-  {
-    postId: "5",
-    title: "안녕하세요 구교현입니다.",
-    major: "소프트웨어학과",
-    grade: "4",
-    star: "4.5",
-    userNickname: "gugu",
-    userProfile: "/mentoring.jpeg",
-  },
-  {
-    postId: "6",
-    title: "안녕하세요 구교현입니다.",
-    major: "소프트웨어학과",
-    grade: "4",
-    star: "4.5",
-    userNickname: "gugu",
-    userProfile: "/mentoring.jpeg",
-  },
-
-  {
-    postId: "7",
-    title: "안녕하세요 구교현입니다.",
-    major: "소프트웨어학과",
-    grade: "4",
-    star: "4.5",
-    userNickname: "gugu",
-    userProfile: "/mentoring.jpeg",
-  },
-  {
-    postId: "8",
-    title: "안녕하세요 구교현입니다.",
-    major: "소프트웨어학과",
-    grade: "4",
-    star: "4.5",
-    userNickname: "gugu",
-    userProfile: "/mentoring.jpeg",
-  },
-  {
-    postId: "9",
-    title: "안녕하세요 구교현입니다.",
-    major: "소프트웨어학과",
-    grade: "4",
-    star: "4.5",
-    userNickname: "gugu",
-    userProfile: "/mentoring.jpeg",
-  },
-  {
-    postId: "10",
-    title: "안녕하세요 구교현입니다.",
-    major: "소프트웨어학과",
-    grade: "4",
-    star: "4.5",
-    userNickname: "gugu",
-    userProfile: "/mentoring.jpeg",
-  },
-  {
-    postId: "11",
-    title: "안녕하세요 구교현입니다.",
-    major: "소프트웨어학과",
-    grade: "4",
-    star: "4.5",
-    userNickname: "gugu",
-    userProfile: "/mentoring.jpeg",
-  },
-  {
-    postId: "12",
-    title: "안녕하세요 구교현입니다.",
-    major: "소프트웨어학과",
-    grade: "4",
-    star: "4.5",
-    userNickname: "gugu",
-    userProfile: "/mentoring.jpeg",
-  },
-];
-
-export default function MainList() {
+export default function MainList({ contents }) {
   return (
-    <section className="max-w-5xl m-auto grid grid-cols-1 gap-2 pt-1 pb-12 px-6 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-      {cards.map((card) => (
-        <Card key={card.postId} {...card}></Card>
-      ))}
-    </section>
+    <>
+      {contents.length !== 0 ? (
+        <section className="max-w-5xl m-auto grid grid-cols-1 gap-2 pt-1 pb-12 px-6 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+          {contents.map((card) => (
+            <Card key={card.postId} {...card}></Card>
+          ))}
+        </section>
+      ) : (
+        <div className="pt-20 pb-36 text-xl text-center text-gray-600 w-full">검색 결과가 없습니다.</div>
+      )}
+    </>
   );
 }
 

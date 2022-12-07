@@ -16,8 +16,10 @@ export default function RegisterPage() {
     Object.entries(data).map((line) => frm.append(line[0], line[1]));
     console.log([...frm.entries()]);
     const result = await registApi(frm);
-    if (result) navigate("/");
-    else alert("오류발생!");
+    if (result) {
+      alert("회원가입이 완료되었습니다.");
+      navigate("/");
+    } else alert("오류발생!");
   };
 
   return (

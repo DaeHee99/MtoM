@@ -14,8 +14,10 @@ export default function MentoringRegisterPage() {
   const onSubmit = async (data) => {
     const result = await mentoringCreateApi(data);
     console.log(result);
-    if (result) navigate("/");
-    else alert("오류발생!");
+    if (result) {
+      alert("멘토링이 생성되었습니다.");
+      navigate(-1);
+    } else alert("오류발생!");
   };
 
   return (

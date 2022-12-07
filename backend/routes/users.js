@@ -172,7 +172,7 @@ router.post("/mentor", async function (req, res, next) {
   }
 });
 
-const DIR = "./public/";
+const DIR = "../frontend/public/";
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, DIR);
@@ -216,7 +216,7 @@ router.post("/", upload.single("ProfileImage"), async function (req, res, next) 
       userID: userID,
       nickname: nickname,
       password: password,
-      profileImage: url + "/public/" + req.file.filename /*(req.body.file.filename)*/,
+      profileImage: "/" + req.file.filename /*(req.body.file.filename)*/,
       mentor: false,
     });
     await user.save();

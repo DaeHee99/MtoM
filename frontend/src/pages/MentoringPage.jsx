@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { mentoringPostApi } from "../api/mentoring";
 import Ordering from "../components/mentoring/Ordering";
 
 const mentoringData = {
@@ -13,29 +17,45 @@ const mentoringData = {
 };
 
 export default function MentoringPage() {
+  const { postId } = useParams();
+  const [mentoringData, setMentoringData] = useState();
+
+  useEffect(() => {
+    async function getServerData() {
+      const result = await mentoringPostApi(postId);
+      console.log(result);
+      setMentoringData(result);
+    }
+    getServerData();
+  }, [postId]);
+
   return (
     <main className="flex h-full items-stretch max-w-5xl w-full m-auto">
-      <section className="h-fit flex-1 p-4 pt-8 sm:p-10">
-        <h1 className="text-4xl font-bold pb-2">{mentoringData.title}</h1>
-        <div className="flex items-center justify-start space-x-6">
-          <div className="flex items-center">
-            <img
-              src={mentoringData.userProfile}
-              alt="유저 프로필"
-              className="w-16 h-16 rounded-full object-cover"
-            ></img>
-            <span className="ml-2 flex-1 text-2xl">{mentoringData.userNickname}</span>
+      {mentoringData ? (
+        <section className="h-fit flex-1 p-4 pt-8 sm:p-10">
+          <h1 className="text-4xl font-bold pb-2">{mentoringData.title}</h1>
+          <div className="flex items-center justify-start space-x-6">
+            <div className="flex items-center">
+              <img
+                src={mentoringData.userProfile}
+                alt="유저 프로필"
+                className="w-16 h-16 rounded-full object-cover"
+              ></img>
+              <span className="ml-2 flex-1 text-2xl">{mentoringData.userNickname}</span>
+            </div>
+            <div className="bg-gray-200 rounded-md p-5 my-3 text-lg font-bold w-fit">
+              <p className="text-stone-600">학과 : {mentoringData.mentormajor}</p>
+              <p className="text-stone-600">학년 : {mentoringData.grade}학년</p>
+            </div>
           </div>
-          <div className="bg-gray-200 rounded-md p-5 my-3 text-lg font-bold w-fit">
-            <p className="text-stone-600">학과 : {mentoringData.major}</p>
-            <p className="text-stone-600">학년 : {mentoringData.grade}학년</p>
-          </div>
-        </div>
-        <section className="pt-10 whitespace-pre-wrap">{mentoringData.content}</section>
-        <section className="mt-10 py-5 border-t border-t-red-500">
-          <h3 className="text-3xl font-bold">리뷰란</h3>
+          <section className="pt-10 whitespace-pre-wrap">{mentoringData.content}</section>
+          <section className="mt-10 py-5 border-t border-t-red-500">
+            <h3 className="text-3xl font-bold">리뷰란</h3>
+          </section>
         </section>
-      </section>
+      ) : (
+        <div>로딩중</div>
+      )}
       <Ordering></Ordering>
     </main>
   );

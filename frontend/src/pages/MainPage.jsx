@@ -11,26 +11,32 @@ export default function MainPage() {
   const [searchParams] = useSearchParams();
   const queryList = [...searchParams];
   const [serverData, setServerData] = useState();
-  console.log(serverData);
 
   useEffect(() => {
     async function getList() {
       const queryObj = {};
-      queryList.map((elem) => (queryObj[elem[0]] = queryObj[elem[1]]));
+      queryList.map((elem) => (queryObj[elem[0]] = elem[1]));
+      console.log(queryObj);
       const result = await mentoringListApi(queryObj);
       setServerData(result);
     }
     getList();
-  }, []);
+  }, [searchParams]);
 
   return (
-    <main className="w-full h-full bg-gray-50">
+    <main className="w-full h-full bg-gray-50 min-h-screen">
       <MainBanner></MainBanner>
       <MainCardsFilter></MainCardsFilter>
-      <MainList></MainList>
-      <div className="pb-20">
-        <PageNav endPage={5}></PageNav>
-      </div>
+      {serverData ? (
+        <>
+          <MainList contents={serverData.contents}></MainList>
+          <div className="pb-20">
+            <PageNav endPage={parseInt((serverData.totalNum - 1) / 12) + 1}></PageNav>
+          </div>
+        </>
+      ) : (
+        <div>로딩중 ㅎ;</div>
+      )}
     </main>
   );
 }
