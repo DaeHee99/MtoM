@@ -1,12 +1,13 @@
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../common/Button";
 import ReviewModal from "./ReviewModal";
 
 export default function MentoringView({ isMentor }) {
   return (
     <section className="w-full border border-gray-100 shadow-md px-5 py-5 min-h-[30rem] rounded-md">
-      <h2 className="text-3xl font-semibold">{isMentor ? "내가 신청한 멘토들" : "멘토링 관리"}</h2>
+      <h2 className="text-3xl font-semibold">{!isMentor ? "내가 신청한 멘토들" : "멘토링 관리"}</h2>
       {!isMentor ? <MenteePart /> : <MentorPart />}
     </section>
   );
@@ -26,7 +27,6 @@ const mentorData = [
 function MenteePart() {
   const onReviewClick = () => setIsReviewOpen(true);
   const onChatClick = () => {};
-  const onDeleteClick = () => {};
   const [isReviewOpen, setIsReviewOpen] = useState(false);
 
   return (
@@ -53,9 +53,16 @@ function MenteePart() {
 }
 
 function MentorPart() {
+  const navigate = useNavigate();
+  const onMentoringCreate = () => navigate("/regist-mentoring");
+
   return (
     <section>
-      <div className="border border-gray-300 w-fit p-5 mt-10 rounded-md flex items-center justify-center space-x-2">
+      <div className="border border-gray-300 w-full h-full flex flex-col justify-center items-center py-10 rounded-lg mt-10 space-y-4">
+        <h1>아직 멘토링을 생성하지 않으셨습니다.</h1>
+        <Button onClick={onMentoringCreate}>멘토링 생성하기</Button>
+      </div>
+      {/* <div className="border border-gray-300 w-full p-5 mt-10 rounded-md flex flex-col items-center justify-center space-x-2">
         <div className="max-w-[20rem] w-fit">
           <h3 className="text-lg font-semibold">안녕하세요. 구교현입니다.</h3>
           <div>
@@ -63,11 +70,11 @@ function MentorPart() {
             <p>학년 : 4학년</p>
           </div>
         </div>
-        <div className="flex flex-col space-y-2">
+        <div className="flex mt-6 space-x-2">
           <Button>수정하기</Button>
           <Button>채팅하기</Button>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }

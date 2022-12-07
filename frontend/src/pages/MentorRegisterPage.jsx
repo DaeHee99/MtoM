@@ -3,11 +3,13 @@ import Button from "../components/common/Button";
 import { useForm } from "react-hook-form";
 import ListBox from "../components/common/ListBox";
 import { emailSendApi, mentorRegistApi } from "../api/authApi";
+import { useNavigate } from "react-router-dom";
 
 const categorys = ["소프트웨어학과", "인공지능융합학과", "사이버보안학과", "미디어학과", "국방디지털융합학과"];
 const grades = ["1", "2", "3", "4"];
 
 export default function MentorRegisterPage() {
+  const navigate = useNavigate();
   const { register, control, handleSubmit, formState, getValues } = useForm({
     mode: "onTouched",
     defaultValues: {
@@ -20,7 +22,7 @@ export default function MentorRegisterPage() {
     const result = await mentorRegistApi(data);
     if (result) {
       alert("멘토 등록이 완료되었습니다.");
-      navigator("/");
+      navigate("/");
       localStorage.setItem("isMentor", true);
     } else alert("멘토 등록에 실패했습니다.");
   };

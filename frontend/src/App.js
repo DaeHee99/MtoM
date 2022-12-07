@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./layout/Header";
-import CreateMentoringPage from "./pages/CreateMentoringPage";
 import MainPage from "./pages/MainPage";
 import MentoringPage from "./pages/MentoringPage";
+import MentoringRegisterPage from "./pages/MentoringRegisterPage";
 import MentorRegisterPage from "./pages/MentorRegisterPage";
 import MypagePage from "./pages/MypagePage";
 import RegisterPage from "./pages/RegisterPage";
@@ -18,7 +18,7 @@ function App() {
           <Route path="/mypage/:userId" element={<MypagePage></MypagePage>}></Route>
           <Route path="/regist" element={<RegisterPage></RegisterPage>}></Route>
           <Route path="/regist-mentor" element={<MentorRegisterPage></MentorRegisterPage>}></Route>
-          <Route path="/mentoring/regist" element={<CreateMentoringPage></CreateMentoringPage>}></Route>
+          <Route path="/regist-mentoring" element={<MentoringRegisterPage></MentoringRegisterPage>}></Route>
         </Routes>
       </div>
     </BrowserRouter>
