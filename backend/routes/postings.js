@@ -107,7 +107,8 @@ router.get('/', function(req, res, next) {
       async () => {
         let targetCategory = req.body.category;
         let sortTarget = req.body.sort;
-        // let page = req.body.page;
+        let page = req.body.page;
+        if(page === undefined) page = 0;
         
         let result;
 
@@ -117,7 +118,7 @@ router.get('/', function(req, res, next) {
             result = await postingModel.find({category : targetCategory}).sort({ "date": -1 });
         }
 
-        if(result) res.send({contents: result, totalNum: result.length});
+        if(result) res.send({contents: result.slice(12*page, (12*page + 12)), totalNum: result.length});
         else res.status(404).send(false);
       },
       err => { res.status(500).send("error : DB is not connected."); }
