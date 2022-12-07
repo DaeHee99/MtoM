@@ -18,14 +18,10 @@ const postingSchema = new mongoose.Schema({
   postId : String,
   title : String,
   content : String,
-  category: String,
   userNickname : String, //
   userProfile : String, //
   grade : String, //
   star : String,
-  mentorNickName : String,
-  mentorProfileImage : String,
-  mentorgrade : String,
   mentormajor : String,
   date : Date,
 })
@@ -46,45 +42,51 @@ const userModel = mongoose.model("users",userSchema);
 
 const postingModel = mongoose.model('postings', postingSchema);
 
+/* POST /postings */
+router.post('/', function(req, res, next) {
+  mongoose.connect("mongodb://localhost:27017/websystemPj").then(
+    async () => {
+      let randomId;
+      while(true) {
+          randomId = (Math.floor(Math.random() * 10000)).toString();
+          let check = await postingModel.findOne({postId : randomId});
+          if(!check) break;
+      }
+      
+      const user = await userModel.findOne({userID : req.session.user.userID});
+
+      postingModel.create({
+          postId : randomId,
+          title : req.body.title,
+          content : req.body.content,
+          userNickname : req.session.user.nickname,
+          userProfile : user.profileImage,
+          grade : user.grade,
+          mentormajor : user.major,
+          star : "0",
+          date: new Date()
+      }, function(err) {
+          if(err) res.status(500).send(false);
+          else res.status(200).send(randomId);
+      });
+  },
+    err => { res.status(500).send("error : DB is not connected."); }
+  )
+});
+
+
 /* PUT /postings/:post_id */
 router.put('/:post_id', function(req, res, next) {
     mongoose.connect("mongodb://localhost:27017/websystemPj").then(
       async () => {
         const check = await postingModel.findOne({postId : req.params.post_id});
-        if(!check) { // 새로운 id : 새로운 post 추가
-            let randomId;
-            while(true) {
-                randomId = (Math.floor(Math.random() * 10000)).toString();
-                let check = await postingModel.findOne({postId : randomId});
-                if(!check) break;
-            }
-            
-            const user = await userModel.findOne({userID : req.session.user.userID});
-
-            postingModel.create({
-                postId : randomId,
-                title : req.body.title,
-                content : req.body.content,
-                category: req.body.category,
-                userNickname : req.session.user.nickname,
-                userProfile : user.profileImage,
-                grade : user.grade,
-                mentorNickName : req.session.user.nickname,
-                mentorProfileImage : user.profileImage,
-                mentorgrade : user.grade,
-                mentormajor : user.major,
-                star : "0",
-                date: new Date()
-            }, function(err) {
-                if(err) res.status(500).send(false);
-                else res.status(200).send(true);
-            });
+        if(!check) { // 새로운 id
+          res.status(404).send(false);
         }
         else { // 기존 post 수정
             postingModel.updateOne({postId : req.params.post_id}, {
                 title: req.body.title,
                 content: req.body.content,
-                category: req.body.category,
                 date: new Date()
             }, function(err) {
                 if(err) res.status(500).send(false);
