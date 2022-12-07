@@ -113,9 +113,9 @@ router.get('/', function(req, res, next) {
         let result;
 
         if (sortTarget === "별점순") {
-            result = await postingModel.find({category : targetCategory}).sort({ "star": -1 });
+            result = await postingModel.find({mentormajor : targetCategory}).sort({ "star": -1 });
         } else { // 최신순
-            result = await postingModel.find({category : targetCategory}).sort({ "date": -1 });
+            result = await postingModel.find({mentormajor : targetCategory}).sort({ "date": -1 });
         }
 
         if(result) res.send({contents: result.slice(12*page, (12*page + 12)), totalNum: result.length});
