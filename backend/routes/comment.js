@@ -17,8 +17,9 @@ router.use(express_session({
 const commentSchema = new mongoose.Schema({
     userId : String,
     commentId : String,
-    postingId : String,
+    postId : String,
     content : String,
+	  userNickName : String,
     star : Number
 })
 
@@ -39,8 +40,9 @@ router.post('/', function(req, res, next) {
         commentModel.create({
             userId : req.session.user.userID,
             commentId : randomId,
-            postingId : req.body.postingId,
+            postId : req.body.postId,
             content : req.body.content,
+            userNickName : req.session.user.nickname,
             star : req.body.star
         }, function(err) {
             if(err) res.status(500).send(false);
@@ -57,7 +59,7 @@ router.post('/', function(req, res, next) {
 router.get('/:post_id', function(req, res, next) {
     mongoose.connect("mongodb://localhost:27017/websystemPj").then(
         async () => {
-        const result = await commentModel.find({postingId : req.params.post_id});
+        const result = await commentModel.find({postId : req.params.post_id});
   
         if(result) res.status(200).send({contents: result, totalNum: result.length});
         else res.status(404).send(false);
@@ -91,7 +93,7 @@ router.delete('/:commentId', function(req, res, next) {
 router.get('/', function(req, res, next) {
     mongoose.connect("mongodb://localhost:27017/websystemPj").then(
         async () => {
-        const result = await commentModel.find({userId : req.params.userId, postingId: req.params.postingId});
+        const result = await commentModel.find({userId : req.params.userId, postId: req.params.postId});
         
         if(result) res.status(200).send(result);
         else res.status(404).send(false);
