@@ -7,20 +7,7 @@ const nodemailer = require('nodemailer');
 const {googleSecret, sessionSecret} = require('../config/secret')
 const multer = require('multer');
 const model = require('../models/users')
-/*
-const websystemPj = new mongoose.Schema({
-  userID: String,
-  nickname: String,
-  password: String,
-  profileImage: String,
-  grade: String,
-  major: String,
-  email: String,
-  mentor: Boolean,
-  code: String,
-  list: Array,
-})
-*/
+
 let status
 
 const connectDB = async function(req,res,next){
@@ -33,7 +20,6 @@ const connectDB = async function(req,res,next){
   }
 }
 
-//const model = mongoose.model("Users",websystemPj)
 router.use(connectDB)
 router.use(express_session({
   secret: sessionSecret,
@@ -66,7 +52,6 @@ router.get('/logout', async function (req,res,next) {
 router.post('/login', async function(req, res, next) {
   const {userID, password} = req.body
   let user = await model.find({userID: userID, password: password})
-  //console.log(user)
   if (user.length == 0) return res.status(400).send({message:"아이디 또는 비밀번호가 일치하지 않습니다."})
 
   if (!req.session.user){
@@ -151,7 +136,7 @@ router.post('/mentor', async function(req, res, next) {
   const {grade, major, email, code} = req.body
 
   let useremail = await model.find({email: email})
-  if (useremail.length >0) return res.status(400).send({message:"이미 존재하는 회원입니다."})
+  if (useremail[0].length >0) return res.status(400).send({message:"이미 존재하는 회원입니다."})
 
   try{
     if(!grade) return res.status(400).send({mentor: false,message:"grade 입력해주세요."})

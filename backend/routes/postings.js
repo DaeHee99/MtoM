@@ -6,6 +6,7 @@ const express_session = require('express-session');
 const MongoStore = require('connect-mongo');
 const {sessionSecret} = require('../config/secret');
 const userModel = require('../models/users')
+const postingModel = require('../models/postings')
 
 router.use(express_session({
   secret: sessionSecret,
@@ -14,20 +15,6 @@ router.use(express_session({
   store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/websystemPj"}),
   cookie:{maxAge:(3.6e+6)*24*14}
 }))
-
-const postingSchema = new mongoose.Schema({
-  postId : String,
-  title : String,
-  content : String,
-  userNickname : String, //
-  userProfile : String, //
-  grade : String, //
-  star : String,
-  mentormajor : String,
-  date : Date,
-})
-
-const postingModel = mongoose.model('postings', postingSchema);
 
 /* POST /postings */
 router.post('/', function(req, res, next) {
@@ -151,7 +138,7 @@ router.delete('/:post_id', function(req, res, next) {
 /* POST /postings/:post_id */
 //const model = mongoose.model("Users",websystemPj)
 
-router.post('/:post_id', function(req, res, next) {
+router.post('/:postId', function(req, res, next) {
     mongoose.connect("mongodb://localhost:27017/websystemPj").then(
       async () => {
         const {postid} = req.body
