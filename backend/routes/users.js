@@ -4,7 +4,7 @@ const mongoose = require("mongoose")
 const express_session = require('express-session')
 const MongoStore = require('connect-mongo')
 const nodemailer = require('nodemailer');
-const {googleSecret, sessionSecret} = require('../config/secret')
+const {googleSecret, sessionSecret, mongoserver} = require('../config/secret')
 const multer = require('multer');
 const model = require('../models/users')
 
@@ -12,7 +12,8 @@ let status
 
 const connectDB = async function(req,res,next){
   try{
-    await mongoose.connect("mongodb://localhost:27017/websystemPj")
+    //await mongoose.connect("mongodb://localhost:27017/websystemPj")
+    await mongoose.connect(mongoserver)
     status = mongoose.connection.readyState
     next()
   }catch(err){
@@ -25,7 +26,7 @@ router.use(express_session({
   secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/websystemPj"}),
+  store: MongoStore.create({mongoUrl: mongoserver}),
   cookie:{maxAge:(3.6e+6)*24*14}
 }))
 
@@ -183,16 +184,14 @@ const DIR = "../frontend/public/";
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
       callback(null, DIR)
-  },//file 을 받아와서 DIR 경로에 저장한다.
-  filename: (req, file, callback) => {// 저장할 파일의 이름을 설정한다.
-      //const fileName = file.originalname.toLowerCase().split(' ').join('-');
-      //callback(null, uuidv4() + '-' + fileName)
+  },
+  filename: (req, file, callback) => {
       callback(null, file.originalname)
   }
 });
 const upload = multer({
   storage: storage,
-  fileFilter: (req, file, callback) => {// 말 그대로 fileFilter
+  fileFilter: (req, file, callback) => {
       if(file.mimetype == "image/png"
          || file.mimetype == "image/jpg"
          || file.mimetype == "image/jpeg"){
