@@ -39,7 +39,13 @@ router.get('/', async function (req,res,next) {
     }
     else{
       let post = await postingModel.findOne({userNickname: listuser.nickname})
-      newList.push({postId: post.postId, mentorNickname: listuser.nickname, menteeProfile: listuser.profileImage})
+
+      let iscomment;
+      let check = await commentModel.findOne({postId : post.postId, userId : req.session.user.userID});
+      if(check) iscomment = true;
+      else iscomment = false;
+
+      newList.push({postId: post.postId, mentorNickname: listuser.nickname, menteeProfile: listuser.profileImage, iscomment : iscomment})
     }
   }
 
