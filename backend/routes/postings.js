@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const express_session = require('express-session');
 const MongoStore = require('connect-mongo');
-const {sessionSecret} = require('../config/secret');
+const {sessionSecret,mongoserver} = require('../config/secret');
 const userModel = require('../models/users')
 const postingModel = require('../models/postings')
 const commentModel = require('../models/comments')
@@ -13,7 +13,7 @@ let status;
 
 const connectDB = async function(req,res,next){
   try{
-    await mongoose.connect("mongodb://localhost:27017/websystemPj")
+    await mongoose.connect(mongoserver)
     status = mongoose.connection.readyState
     next()
   } catch(err){
@@ -22,14 +22,15 @@ const connectDB = async function(req,res,next){
 }
 
 router.use(connectDB);
+/*
 router.use(express_session({
   secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/websystemPj"}),
+  store: MongoStore.create({mongoUrl:mongoserver}),
   cookie:{maxAge:(3.6e+6)*24*14}
 }))
-
+*/
 /* POST /postings */
 router.post('/', async function(req, res, next) {
   const check = await postingModel.findOne({mentorId : req.session.user.userID});
@@ -71,7 +72,7 @@ router.post('/', async function(req, res, next) {
 
 
 /* PUT /postings/:postid */
-router.put('/:postid', async function(req, res, next) { 
+router.put('/:postid', async function(req, res, next) {
   const check = await postingModel.findOne({postId : req.params.postid});
   if(!check) { // 새로운 id
     res.status(404).send(false);
