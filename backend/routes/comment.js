@@ -53,9 +53,9 @@ router.post('/', async function(req, res, next) {
 });
 
 
-/* GET /comment/:post_id */
-router.get('/:post_id', async function(req, res, next) {
-  const result = await commentModel.find({postId : req.params.post_id});
+/* GET /comment/:postid */
+router.get('/:postid', async function(req, res, next) {
+  const result = await commentModel.find({postId : req.params.postid});
 
   if(result) res.status(200).send({contents: result, totalNum: result.length});
   else res.status(404).send(false);
