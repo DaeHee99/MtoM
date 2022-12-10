@@ -49,6 +49,27 @@ router.get('/logout', async function (req,res,next) {
     return res.status(400).send(false)
 })
 
+router.get('/:userid', async function (req,res,next) {
+  let user = await model.findOne({userID: req.session.user.userID, password: req.session.user.password})
+  return res.send(user)
+})
+
+router.put('/correction', async function (req,res,next) {
+  const {profileImage, grade, major} = req.body
+  if (req.session.user.mentor){
+    let user = await model.updateOne({userID: req.session.user.userID, password: req.session.user.password},
+      {
+        profileImage: profileImage,
+        grade: grade,
+        major: major
+      })
+  }
+  else{
+    let user = await model.updateOne({userID: req.session.user.userID, password: req.session.user.password},{profileImage: profileImage})
+  }
+  return res.send({result: true})
+})
+
 router.post('/login', async function(req, res, next) {
   const {userID, password} = req.body
   let user = await model.find({userID: userID, password: password})
