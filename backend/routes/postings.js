@@ -33,6 +33,16 @@ router.use(
 
 /* POST /postings */
 router.post("/", async function (req, res, next) {
+  // const check = await postingModel.findOne({mentorId : req.session.user.userID});
+  // if(check) { // 이미 post 등록했음
+  //   res.status(400).send({result : false, message: "이미 등록했습니다."});
+  //   return;
+  // }
+  if (!req.session.user.mentor) {
+    res.status(400).send({ result: false, message: "멘티는 등록 불가능." });
+    return;
+  }
+
   let randomId;
   while (true) {
     randomId = Math.floor(Math.random() * 10000).toString();
@@ -52,7 +62,7 @@ router.post("/", async function (req, res, next) {
       userProfile: user.profileImage,
       grade: user.grade,
       mentormajor: user.major,
-      star: "0",
+      star: [],
       date: new Date(),
     },
     function (err) {
@@ -62,16 +72,16 @@ router.post("/", async function (req, res, next) {
   );
 });
 
-/* PUT /postings/:post_id */
-router.put("/:post_id", async function (req, res, next) {
-  const check = await postingModel.findOne({ postId: req.params.post_id });
+/* PUT /postings/:postid */
+router.put("/:postid", async function (req, res, next) {
+  const check = await postingModel.findOne({ postId: req.params.postid });
   if (!check) {
     // 새로운 id
     res.status(404).send(false);
   } else {
     // 기존 post 수정
     postingModel.updateOne(
-      { postId: req.params.post_id },
+      { postId: req.params.postid },
       {
         title: req.body.title,
         content: req.body.content,
@@ -107,33 +117,30 @@ router.get("/", async function (req, res, next) {
   else res.status(404).send(false);
 });
 
-/* GET /postings/:post_id */
-router.get("/:post_id", async function (req, res, next) {
-  const result = await postingModel.findOne({ postId: req.params.post_id });
+/* GET /postings/:postid */
+router.get("/:postid", async function (req, res, next) {
+  const result = await postingModel.findOne({ postId: req.params.postid });
 
   if (result) res.status(200).send(result);
   else res.status(404).send(false);
 });
 
-/* DELETE /postings/:post_id */
-router.delete("/:post_id", async function (req, res, next) {
-  const check = await postingModel.findOne({ postId: req.params.post_id });
+/* DELETE /postings/:postid */
+router.delete("/:postid", async function (req, res, next) {
+  const check = await postingModel.findOne({ postId: req.params.postid });
   if (!check) {
     res.status(404).send(false);
     return;
   }
 
-  postingModel.deleteOne({ postId: req.params.post_id }, function (err) {
+  postingModel.deleteOne({ postId: req.params.postid }, function (err) {
     if (err) res.status(500).send(false);
     else res.status(200).send(true);
   });
 });
 
-// 멘토링 신청하기..?
-/* POST /postings/:post_id */
-//const model = mongoose.model("Users",websystemPj)
-
-router.post("/:postId", async function (req, res, next) {
+/* POST /postings/apply */
+router.post("/apply", async function (req, res, next) {
   const { postid } = req.body;
 
   let post = await postingModel.find({ postId: postid });

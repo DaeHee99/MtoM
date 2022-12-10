@@ -3,9 +3,10 @@ var router = express.Router();
 const mongoose = require("mongoose");
 const userModel = require("../models/users");
 const postingModel = require("../models/postings");
+
 const express_session = require("express-session");
 const MongoStore = require("connect-mongo");
-const { googleSecret, sessionSecret } = require("../config/secret");
+const { sessionSecret } = require("../config/secret");
 
 let status;
 const connectDB = async function (req, res, next) {
@@ -19,7 +20,6 @@ const connectDB = async function (req, res, next) {
 };
 
 router.use(connectDB);
-
 router.use(
   express_session({
     secret: sessionSecret,
@@ -44,7 +44,16 @@ router.get("/", async function (req, res, next) {
     }
   }
 
-  return res.send({ userProfile: user.profileImage, mlist: newList });
+  if (user.mentor)
+    return res.send({
+      userProfile: user.profileImage,
+      mlist: newList,
+      nickname: user.nickname,
+      email: user.email,
+      major: user.major,
+      grade: user.grade,
+    });
+  else return res.send({ userProfile: user.profileImage, mlist: newList, nickname: user.nickname });
 });
 
 router.get("/mentor/mypost", async function (req, res, next) {

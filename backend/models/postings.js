@@ -8,7 +8,7 @@ const postingSchema = new mongoose.Schema({
     userNickname : String,
     userProfile : String,
     grade : String,
-    star : String,
+    star : [String],
     mentormajor : String,
     date : Date,
   })

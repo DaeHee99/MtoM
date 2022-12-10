@@ -46,16 +46,27 @@ router.post('/', async function(req, res, next) {
       content : req.body.content,
       userNickName : req.session.user.nickname,
       star : req.body.star
-  }, function(err) {
-      if(err) res.status(500).send({result : false});
-      else res.status(200).send({result : true, commentId : randomId});
+  }, async function(err) {
+    if(err) res.status(500).send({result : false});
+
+    let posting = await postingModel.findOne({postId : req.body.postId});
+    let starList = posting.star.push(req.body.star);
+
+    postingModel.updateOne({postId : req.body.postId}, {
+      star : starList
+    }, function(err) {
+      if(err) res.status(500).send(false);
+      else {
+        res.status(200).send({result : true, commentId : randomId});
+      }
+    });
   });
 });
 
 
-/* GET /comment/:post_id */
-router.get('/:post_id', async function(req, res, next) {
-  const result = await commentModel.find({postId : req.params.post_id});
+/* GET /comment/:postid */
+router.get('/:postid', async function(req, res, next) {
+  const result = await commentModel.find({postId : req.params.postid});
 
   if(result) res.status(200).send({contents: result, totalNum: result.length});
   else res.status(404).send(false);
