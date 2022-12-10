@@ -85,6 +85,10 @@ router.delete('/:commentId', async function(req, res, next) {
     res.status(404).send(false);
     return;
   }
+  if(check.userId !== req.session.user.userID) {
+    res.status(404).send(false);
+    return;
+  }
 
   commentModel.deleteOne({commentId : req.params.commentId}, function(err) {
     if(err) res.status(500).send(false);
