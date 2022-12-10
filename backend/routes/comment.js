@@ -71,9 +71,14 @@ router.post('/', async function(req, res, next) {
 
 /* GET /comment/:postid */
 router.get('/:postid', async function(req, res, next) {
-  const result = await commentModel.find({postId : req.params.postid});
+  let result = await commentModel.find({postId : req.params.postid});
 
-  if(result) res.status(200).send({contents: result, totalNum: result.length});
+  //console.log(result);
+  const newResult = result.map(doc => ({...doc})['_doc']).map(elem => ({...elem,
+   isMyComment: elem.userId === req.session.user.userID}));
+  //console.log(newResult);
+
+  if(result) res.status(200).send({contents: newResult, totalNum: result.length});
   else res.status(404).send(false);
 });
 
