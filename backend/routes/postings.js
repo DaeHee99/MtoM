@@ -33,11 +33,12 @@ router.use(
 
 /* POST /postings */
 router.post("/", async function (req, res, next) {
-  // const check = await postingModel.findOne({mentorId : req.session.user.userID});
-  // if(check) { // 이미 post 등록했음
-  //   res.status(400).send({result : false, message: "이미 등록했습니다."});
-  //   return;
-  // }
+  const check = await postingModel.findOne({ mentorId: req.session.user.userID });
+  if (check) {
+    // 이미 post 등록했음
+    res.status(400).send({ result: false, message: "이미 등록했습니다." });
+    return;
+  }
   if (!req.session.user.mentor) {
     res.status(400).send({ result: false, message: "멘티는 등록 불가능." });
     return;
@@ -63,6 +64,7 @@ router.post("/", async function (req, res, next) {
       grade: user.grade,
       mentormajor: user.major,
       star: [],
+      staravg: "0",
       date: new Date(),
     },
     function (err) {

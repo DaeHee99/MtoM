@@ -40,7 +40,18 @@ router.get("/", async function (req, res, next) {
       newList.push({ menteeNickname: listuser.nickname, menteeProfile: listuser.profileImage });
     } else {
       let post = await postingModel.findOne({ userNickname: listuser.nickname });
-      newList.push({ postId: post.postId, mentorNickname: listuser.nickname, menteeProfile: listuser.profileImage });
+
+      let iscomment;
+      let check = await commentModel.findOne({ postId: post.postId, userId: req.session.user.userID });
+      if (check) iscomment = true;
+      else iscomment = false;
+
+      newList.push({
+        postId: post.postId,
+        mentorNickname: listuser.nickname,
+        menteeProfile: listuser.profileImage,
+        iscomment: iscomment,
+      });
     }
   }
 
@@ -61,14 +72,12 @@ router.get("/mentor/mypost", async function (req, res, next) {
   const isPost = result.length !== 0;
 
   if (result)
-    res
-      .status(200)
-      .send({
-        isPost,
-        title: isPost ? result[0].title : "",
-        postId: isPost ? result[0].postId : "",
-        content: isPost ? result[0].content : "",
-      });
+    res.status(200).send({
+      isPost,
+      title: isPost ? result[0].title : "",
+      postId: isPost ? result[0].postId : "",
+      content: isPost ? result[0].content : "",
+    });
   else res.status(404).send(false);
 });
 

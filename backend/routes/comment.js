@@ -50,10 +50,15 @@ router.post('/', async function(req, res, next) {
     if(err) res.status(500).send({result : false});
 
     let posting = await postingModel.findOne({postId : req.body.postId});
-    let starList = posting.star.push(req.body.star);
-
+  
+    let starList = posting.star;
+    starList.push(req.body.star);
+    let starsum = starList.reduce((a, b) => Number(a) + Number(b), 0);
+    let stars = starsum / starList.length; 
+    
     postingModel.updateOne({postId : req.body.postId}, {
-      star : starList
+      star : starList,
+      staravg : stars.toString()
     }, function(err) {
       if(err) res.status(500).send(false);
       else {
@@ -77,6 +82,10 @@ router.get('/:postid', async function(req, res, next) {
 router.delete('/:commentId', async function(req, res, next) {
   const check = await commentModel.findOne({commentId : req.params.commentId});
   if(!check) {
+    res.status(404).send(false);
+    return;
+  }
+  if(check.userId !== req.session.user.userID) {
     res.status(404).send(false);
     return;
   }
