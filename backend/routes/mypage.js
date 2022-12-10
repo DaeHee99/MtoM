@@ -36,4 +36,11 @@ router.get('/:userId', async function (req,res,next) {
 
 })
 
+router.get('/mentor/mypost', async function (req,res,next) {
+  const result = await postingModel.find({mentorId : req.session.user.userID});
+
+  if(result) res.status(200).send({contents : result, totalNum: result.length});
+  else res.status(404).send(false);
+})
+
 module.exports = router;
