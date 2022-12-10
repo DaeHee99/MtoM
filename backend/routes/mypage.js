@@ -44,7 +44,7 @@ router.get('/', async function (req,res,next) {
   }
 
   if (user.mentor) return res.send({userProfile: user.profileImage, mlist: newList, nickname: user.nickname, email : user.email, major : user.major, grade : user.grade}) 
-  else return res.send({userProfile: user.profileImage, mlist: newList})
+  else return res.send({userProfile: user.profileImage, mlist: newList, nickname: user.nickname})
 
 })
 
