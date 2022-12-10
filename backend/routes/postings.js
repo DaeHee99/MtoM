@@ -31,6 +31,16 @@ router.use(express_session({
 
 /* POST /postings */
 router.post('/', async function(req, res, next) {
+  const check = await postingModel.findOne({mentorId : req.session.user.userID});
+  if(check) { // 이미 post 등록했음
+    res.status(400).send({result : false, message: "이미 등록했습니다."});
+    return;
+  }
+  if(!req.session.user.mentor) {
+    res.status(400).send({result : false, message: "멘티는 등록 불가능."});
+    return;
+  }
+
   let randomId;
   while(true) {
       randomId = (Math.floor(Math.random() * 10000)).toString();
