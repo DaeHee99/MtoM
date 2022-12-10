@@ -58,8 +58,17 @@ router.get("/", async function (req, res, next) {
 
 router.get("/mentor/mypost", async function (req, res, next) {
   const result = await postingModel.find({ mentorId: req.session.user.userID });
+  const isPost = result.length !== 0;
 
-  if (result) res.status(200).send({ contents: result, totalNum: result.length });
+  if (result)
+    res
+      .status(200)
+      .send({
+        isPost,
+        title: isPost ? result[0].title : "",
+        postId: isPost ? result[0].postId : "",
+        content: isPost ? result[0].content : "",
+      });
   else res.status(404).send(false);
 });
 
