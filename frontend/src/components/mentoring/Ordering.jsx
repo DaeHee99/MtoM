@@ -1,10 +1,18 @@
 import { useState } from "react";
+import { mentoringApplyApi } from "../../api/mentoring";
+import { useParams } from "react-router-dom";
 import Button from "../common/Button";
 import ApplyModal from "./ApplyModal";
 
 export default function Ordering() {
   const [isApplyOpen, setIsApplyOpen] = useState(false);
-  const onApplyClick = () => setIsApplyOpen(true);
+  const { postId } = useParams();
+
+  const onApplyClick = async () => {
+    const result = await mentoringApplyApi(postId);
+    if (result) setIsApplyOpen(true);
+    else alert("처리되지 않았습니다.");
+  };
 
   return (
     <>

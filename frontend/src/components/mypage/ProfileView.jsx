@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../common/Button";
 
-export default function ProfileView({ isMentor }) {
+export default function ProfileView({ isMentor, data }) {
   const navigate = useNavigate();
 
   const onMentorRegistClick = () => {
@@ -11,15 +11,15 @@ export default function ProfileView({ isMentor }) {
   return (
     <section className="w-full border border-gray-100 shadow-md rounded-lg py-5 px-3 flex flex-col items-center sm:w-96">
       <figure className="w-32 h-32 rounded-full overflow-hidden">
-        <img src="/mentoring.jpeg" alt="프로필이미지" className="w-full h-full"></img>
+        <img src={data.userProfile} alt="프로필이미지" className="w-full h-full"></img>
       </figure>
       <h2 className="text-3xl font-bold text-stone-700 pt-6">Cuzz</h2>
       <div className="w-full px-3 pt-3 text-stone-500 pb-6 max-w-sm m-auto">
         {isMentor ? (
           <>
-            <p>학년 : 4학년</p>
-            <p>학과 : 소프트웨어학과</p>
-            <p>이메일 : rygus9@naver.com</p>
+            <p>학년 : {data.grade}학년</p>
+            <p>학과 : {data.major}</p>
+            <p>이메일 : {data.email}</p>
           </>
         ) : (
           <></>

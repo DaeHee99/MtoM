@@ -3,6 +3,7 @@ var router = express.Router();
 const mongoose = require("mongoose");
 const userModel = require("../models/users");
 const postingModel = require("../models/postings");
+const commentModel = require("../models/comments");
 
 const express_session = require("express-session");
 const MongoStore = require("connect-mongo");
