@@ -7,6 +7,7 @@ const MongoStore = require('connect-mongo');
 const {sessionSecret} = require('../config/secret');
 const userModel = require('../models/users')
 const postingModel = require('../models/postings')
+const commentModel = require('../models/comments')
 
 let status;
 
@@ -129,7 +130,11 @@ router.delete('/:postid', async function(req, res, next) {
 
   postingModel.deleteOne({postId : req.params.postid}, function(err) {
     if(err) res.status(500).send(false);
-    else res.status(200).send(true);
+
+    commentModel.deleteMany({postId : req.params.postid}, function(err) {
+      if(err) res.status(500).send(false);
+      else res.status(200).send(true);
+    })
   })
 });
 
