@@ -60,6 +60,7 @@ router.post('/', async function(req, res, next) {
       grade : user.grade,
       mentormajor : user.major,
       star : [],
+      staravg : "0",
       date: new Date()
   }, function(err) {
       if(err) res.status(500).send(false);
