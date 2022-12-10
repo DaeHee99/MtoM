@@ -4,6 +4,10 @@ const mongoose = require("mongoose")
 const userModel = require('../models/users')
 const postingModel = require('../models/postings')
 
+const express_session = require('express-session');
+const MongoStore = require('connect-mongo');
+const {sessionSecret} = require('../config/secret');
+
 let status
 const connectDB = async function(req,res,next){
   try{
@@ -16,9 +20,16 @@ const connectDB = async function(req,res,next){
 }
 
 router.use(connectDB)
+router.use(express_session({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/websystemPj"}),
+  cookie:{maxAge:(3.6e+6)*24*14}
+}))
 
-router.get('/:userId', async function (req,res,next) {
-  let user = await userModel.findOne({userID: req.params.userId})
+router.get('/', async function (req,res,next) {
+  let user = await userModel.findOne({userID: req.session.user.userID})
   let list = user.list
   let newList = []
   for (i in list){
@@ -32,7 +43,8 @@ router.get('/:userId', async function (req,res,next) {
     }
   }
 
-  return res.send({userProfile: user.profileImage, mlist: newList})
+  if (user.mentor) return res.send({userProfile: user.profileImage, mlist: newList, nickname: user.nickname, email : user.email, major : user.major, grade : user.grade}) 
+  else return res.send({userProfile: user.profileImage, mlist: newList})
 
 })
 
