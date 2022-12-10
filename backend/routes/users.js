@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const express_session = require("express-session");
 const MongoStore = require("connect-mongo");
 const nodemailer = require("nodemailer");
-const { googleSecret, sessionSecret } = require("../config/secret");
+const { googleSecret, sessionSecret, mongoserver } = require("../config/secret");
 const multer = require("multer");
 const model = require("../models/users");
 
@@ -12,7 +12,8 @@ let status;
 
 const connectDB = async function (req, res, next) {
   try {
-    await mongoose.connect("mongodb://localhost:27017/websystemPj");
+    //await mongoose.connect("mongodb://localhost:27017/websystemPj")
+    await mongoose.connect(mongoserver);
     status = mongoose.connection.readyState;
     next();
   } catch (err) {
@@ -26,7 +27,7 @@ router.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: "mongodb://localhost:27017/websystemPj" }),
+    store: MongoStore.create({ mongoUrl: mongoserver }),
     cookie: { maxAge: 3.6e6 * 24 * 14 },
   })
 );
@@ -189,18 +190,14 @@ const DIR = "../frontend/public/";
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, DIR);
-  }, //file 을 받아와서 DIR 경로에 저장한다.
+  },
   filename: (req, file, callback) => {
-    // 저장할 파일의 이름을 설정한다.
-    //const fileName = file.originalname.toLowerCase().split(' ').join('-');
-    //callback(null, uuidv4() + '-' + fileName)
     callback(null, file.originalname);
   },
 });
 const upload = multer({
   storage: storage,
   fileFilter: (req, file, callback) => {
-    // 말 그대로 fileFilter
     if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
       callback(null, true);
     } else {
@@ -211,13 +208,16 @@ const upload = multer({
 });
 
 router.post("/", upload.single("ProfileImage"), async function (req, res, next) {
+  console.log("500 에러");
   const { userID, nickname, password } = req.body;
 
   let isuser = await model.find({ userID: userID, password: password });
   if (isuser.length > 0) return res.status(400).send({ message: "이미 존재하는 회원입니다.", result: false });
+  console.log("500 에러");
 
   let isnickname = await model.find({ nickname: nickname });
   if (isnickname.length > 0) return res.status(400).send({ message: "이미 존재하는 닉네임입니다.", result: false });
+  console.log("500 에러");
 
   try {
     if (!userID) return res.status(400).send({ message: "id를 입력해주세요.", result: false });
