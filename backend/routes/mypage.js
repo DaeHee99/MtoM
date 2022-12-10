@@ -21,15 +21,15 @@ const connectDB = async function(req,res,next){
 }
 
 router.use(connectDB)
-/*
+
 router.use(express_session({
   secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/websystemPj"}),
+  store: MongoStore.create({mongoUrl:mongoserver}),
   cookie:{maxAge:(3.6e+6)*24*14}
 }))
-*/
+
 router.get('/', async function (req,res,next) {
   let user = await userModel.findOne({userID: req.session.user.userID})
   let list = user.list

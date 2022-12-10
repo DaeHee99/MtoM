@@ -22,7 +22,7 @@ const connectDB = async function(req,res,next){
 }
 
 router.use(connectDB);
-/*
+
 router.use(express_session({
   secret: sessionSecret,
   resave: false,
@@ -30,7 +30,7 @@ router.use(express_session({
   store: MongoStore.create({mongoUrl:mongoserver}),
   cookie:{maxAge:(3.6e+6)*24*14}
 }))
-*/
+
 /* POST /postings */
 router.post('/', async function(req, res, next) {
   const check = await postingModel.findOne({mentorId : req.session.user.userID});
