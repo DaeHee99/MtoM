@@ -161,7 +161,7 @@ router.post("/mentor", async function (req, res, next) {
   const { grade, major, email, code } = req.body;
 
   let useremail = await model.find({ email: email });
-  if (useremail[0].length > 0) return res.status(400).send({ message: "이미 존재하는 회원입니다." });
+  if (useremail.length > 0) return res.status(400).send({ message: "이미 존재하는 회원입니다." });
 
   try {
     if (!grade) return res.status(400).send({ mentor: false, message: "grade 입력해주세요." });

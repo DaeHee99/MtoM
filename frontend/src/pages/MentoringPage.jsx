@@ -73,7 +73,7 @@ export default function MentoringPage() {
                       <span className="text-gray-800 whitespace-pre-wrap">{elem.content}</span>
                       <span className="text-gray-500">별점 : {elem.star}</span>
                     </div>
-                    <Button onClick={onCommentDelete(elem.commentId)}>삭제</Button>
+                    {elem.isMyComment && <Button onClick={onCommentDelete(elem.commentId)}>삭제</Button>}
                   </div>
                 ))}
               </div>

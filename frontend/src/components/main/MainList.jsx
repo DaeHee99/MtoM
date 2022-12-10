@@ -17,7 +17,7 @@ export default function MainList({ contents }) {
   );
 }
 
-function Card({ postId, title, major, grade, star, userNickname, userProfile }) {
+function Card({ postId, title, major, grade, staravg, userNickname, userProfile }) {
   const navigate = useNavigate();
 
   const onCardClick = () => {
@@ -33,7 +33,7 @@ function Card({ postId, title, major, grade, star, userNickname, userProfile }) 
         <img src={userProfile} alt="유저 프로필" className="w-10 h-10 rounded-full object-cover"></img>
         <span className="ml-2 flex-1">{userNickname}</span>
         <span className="flex items-center">
-          <StarIcon className="w-6 h-6 text-red-600 mr-1"></StarIcon> {star}
+          <StarIcon className="w-6 h-6 text-red-600 mr-1"></StarIcon> {staravg ? parseFloat(staravg).toFixed(1) : "0.0"}
         </span>
       </div>
     </div>

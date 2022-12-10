@@ -102,7 +102,7 @@ function MentorPart({ data }) {
               </div>
               <div className="divide-y divide-gray-300 py-5 px-10 ">
                 {data.mlist.map((elem) => (
-                  <div className="py-5 flex items-center w-full" key={elem}>
+                  <div className="py-5 flex items-center w-full" key={elem.menteeNickname}>
                     <img src={elem.menteeProfile} alt="멘티 프로필" className="w-10 h-10 object-cover mr-5"></img>
                     <span className="text-lg text-gray-800 flex-1">{elem.menteeNickname}</span>
                     <Button>채팅하기</Button>
