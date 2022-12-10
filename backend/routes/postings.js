@@ -116,7 +116,11 @@ router.get('/', async function(req, res, next) {
 router.get('/:postid', async function(req, res, next) {
   const result = await postingModel.findOne({postId : req.params.postid});
 
-  if(result) res.status(200).send(result);
+  const user = await userModel.findOne({userID : req.session.user.userID});
+
+  const newResult = {...result['_doc'], isApply: user.list.indexOf(result.mentorId) < 0 ? false : true};
+
+  if(result) res.status(200).send(newResult);
   else res.status(404).send(false);
 });
 
