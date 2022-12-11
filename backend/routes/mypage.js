@@ -32,6 +32,10 @@ router.use(express_session({
 
 router.get('/', async function (req,res,next) {
   let user = await userModel.findOne({userID: req.session.user.userID})
+  if(!user){
+    return res.status(400)
+  }
+
   let list = user.list
   let newList = []
   for (i in list){
