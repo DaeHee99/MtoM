@@ -7,12 +7,12 @@ const commentModel = require("../models/comments");
 
 const express_session = require("express-session");
 const MongoStore = require("connect-mongo");
-const { sessionSecret } = require("../config/secret");
+const { sessionSecret, mongoserver } = require("../config/secret");
 
 let status;
 const connectDB = async function (req, res, next) {
   try {
-    await mongoose.connect("mongodb://localhost:27017/websystemPj");
+    await mongoose.connect(mongoserver);
     status = mongoose.connection.readyState;
     next();
   } catch (err) {
@@ -21,16 +21,15 @@ const connectDB = async function (req, res, next) {
 };
 
 router.use(connectDB);
-router.use(
-  express_session({
-    secret: sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: "mongodb://localhost:27017/websystemPj" }),
-    cookie: { maxAge: 3.6e6 * 24 * 14 },
-  })
-);
-
+/*
+router.use(express_session({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/websystemPj"}),
+  cookie:{maxAge:(3.6e+6)*24*14}
+}))
+*/
 router.get("/", async function (req, res, next) {
   let user = await userModel.findOne({ userID: req.session.user.userID });
   let list = user.list;

@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 const express_session = require("express-session");
 const MongoStore = require("connect-mongo");
-const { sessionSecret } = require("../config/secret");
+const { sessionSecret, mongoserver } = require("../config/secret");
 const userModel = require("../models/users");
 const postingModel = require("../models/postings");
 const commentModel = require("../models/comments");
@@ -13,7 +13,7 @@ let status;
 
 const connectDB = async function (req, res, next) {
   try {
-    await mongoose.connect("mongodb://localhost:27017/websystemPj");
+    await mongoose.connect(mongoserver);
     status = mongoose.connection.readyState;
     next();
   } catch (err) {
@@ -22,16 +22,15 @@ const connectDB = async function (req, res, next) {
 };
 
 router.use(connectDB);
-router.use(
-  express_session({
-    secret: sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: "mongodb://localhost:27017/websystemPj" }),
-    cookie: { maxAge: 3.6e6 * 24 * 14 },
-  })
-);
-
+/*
+router.use(express_session({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({mongoUrl:mongoserver}),
+  cookie:{maxAge:(3.6e+6)*24*14}
+}))
+*/
 /* POST /postings */
 router.post("/", async function (req, res, next) {
   const check = await postingModel.findOne({ mentorId: req.session.user.userID });
@@ -124,7 +123,11 @@ router.get("/", async function (req, res, next) {
 router.get("/:postid", async function (req, res, next) {
   const result = await postingModel.findOne({ postId: req.params.postid });
 
-  if (result) res.status(200).send(result);
+  const user = await userModel.findOne({ userID: req.session.user.userID });
+
+  const newResult = { ...result["_doc"], isApply: user.list.indexOf(result.mentorId) < 0 ? false : true };
+
+  if (result) res.status(200).send(newResult);
   else res.status(404).send(false);
 });
 
