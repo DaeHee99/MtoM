@@ -13,7 +13,7 @@ export default function ProfileView({ isMentor, data }) {
       <figure className="w-32 h-32 rounded-full overflow-hidden">
         <img src={data.userProfile} alt="프로필이미지" className="w-full h-full"></img>
       </figure>
-      <h2 className="text-3xl font-bold text-stone-700 pt-6">Cuzz</h2>
+      <h2 className="text-3xl font-bold text-stone-700 pt-6">{data.nickname}</h2>
       <div className="w-full px-3 pt-3 text-stone-500 pb-6 max-w-sm m-auto">
         {isMentor ? (
           <>

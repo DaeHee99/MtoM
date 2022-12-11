@@ -22,15 +22,17 @@ const connectDB = async function (req, res, next) {
 };
 
 router.use(connectDB);
-/*
-router.use(express_session({
-  secret: sessionSecret,
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({mongoUrl:mongoserver}),
-  cookie:{maxAge:(3.6e+6)*24*14}
-}))
-*/
+
+router.use(
+  express_session({
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: mongoserver }),
+    cookie: { maxAge: 3.6e6 * 24 * 14 },
+  })
+);
+
 /* POST /postings */
 router.post("/", async function (req, res, next) {
   const check = await postingModel.findOne({ mentorId: req.session.user.userID });
@@ -122,10 +124,14 @@ router.get("/", async function (req, res, next) {
 /* GET /postings/:postid */
 router.get("/:postid", async function (req, res, next) {
   const result = await postingModel.findOne({ postId: req.params.postid });
+  let newResult;
 
-  const user = await userModel.findOne({ userID: req.session.user.userID });
-
-  const newResult = { ...result["_doc"], isApply: user.list.indexOf(result.mentorId) < 0 ? false : true };
+  if (req.user) {
+    const user = await userModel.findOne({ userID: req.session.user.userID });
+    newResult = { ...result["_doc"], isApply: user.list.indexOf(result.mentorId) < 0 ? false : true };
+  } else {
+    newResult = { ...result["_doc"], isApply: false };
+  }
 
   if (result) res.status(200).send(newResult);
   else res.status(404).send(false);
@@ -152,6 +158,7 @@ router.delete("/:postid", async function (req, res, next) {
 /* POST /postings/apply */
 router.post("/apply", async function (req, res, next) {
   const { postid } = req.body;
+  console.log(req.session.user);
 
   let post = await postingModel.find({ postId: postid });
   let mentee = await userModel.find({ userID: req.session.user.userID, password: req.session.user.password });

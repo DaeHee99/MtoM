@@ -85,7 +85,7 @@ export default function MentoringPage() {
       ) : (
         <div>로딩중</div>
       )}
-      <Ordering></Ordering>
+      <Ordering show={mentoringData ? !mentoringData.isApply : false}></Ordering>
     </main>
   );
 }
