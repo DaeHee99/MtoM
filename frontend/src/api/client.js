@@ -1,11 +1,8 @@
 import axios from "axios";
-import qs from "qs";
 
 const client = axios.create();
 
-client.defaults.paramsSerializer = (params) => {
-  return qs.stringify(params);
-};
-client.defaults.baseURL = "http://localhost:3000";
+// client.defaults.baseURL = "http://localhost:3000";
+client.defaults.baseURL = "http://ec2-3-36-86-195.ap-northeast-2.compute.amazonaws.com";
 
 export default client;

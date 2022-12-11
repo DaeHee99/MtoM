@@ -2,16 +2,21 @@ import Modal from "../common/Modal";
 import Button from "../common/Button";
 import { useForm } from "react-hook-form";
 import TextAreaInput from "../common/TextAreaInput";
-import StarInput from "../common/StarInput";
-import { postCommentApi } from "../../api/comment";
+import TextInput from "../common/TextInput";
+import { mentoringUpdateApi } from "../../api/mentoring";
 import { useNavigate } from "react-router-dom";
 
-export default function ReviewModal({ isOpen, setIsOpen, postId }) {
+export default function UpdateModal({ isOpen, setIsOpen, mentorPage }) {
   const navigate = useNavigate();
-  const { register, control, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      title: mentorPage?.title,
+      content: mentorPage?.content,
+    },
+  });
   const closeModal = () => setIsOpen(false);
   const onSubmit = async (data) => {
-    const result = await postCommentApi({ ...data, postId: postId });
+    const result = await mentoringUpdateApi(mentorPage.postId, { ...data });
     if (result) {
       alert("등록 완료");
       closeModal();
@@ -25,13 +30,11 @@ export default function ReviewModal({ isOpen, setIsOpen, postId }) {
   return (
     <Modal isOpen={isOpen} closeModal={closeModal}>
       <form className="relative space-y-2 py-8 px-7 bg-white" onSubmit={handleSubmit(onSubmit)}>
-        <h1 className="text-2xl font-bold text-stone-800">후기 작성</h1>
-        <div>
-          <StarInput name="star" control={control}></StarInput>
-        </div>
+        <h1 className="text-2xl font-bold text-stone-800">멘토링 수정</h1>
+        <TextInput register={register("title", { required: true })} placeholder="제목을 입력하세요."></TextInput>
         <TextAreaInput
           id="introduce"
-          placeholder="후기를 입력하세요"
+          placeholder="내용을 입력하세요."
           register={register("content")}
           rows={5}
         ></TextAreaInput>
