@@ -21,5 +21,8 @@ app.use("/api/users", usersRouter);
 app.use("/api/postings", postingsRouter);
 app.use("/api/comment", commentRouter);
 app.use("/api/mypage", mypageRouter);
+app.get("/*", function (request, response) {
+  response.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+});
 
 module.exports = app;
