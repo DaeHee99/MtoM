@@ -104,14 +104,14 @@ router.put("/:postid", async function (req, res, next) {
 /* GET /postings */
 router.get("/", async function (req, res, next) {
   let targetCategory = req.query.category || "소프트웨어학과";
-  let sortTarget = req.query.sort || "최신순";
+  let sortTarget = req.query.sorted || "최신순";
   let page = req.query.page;
   if (page === undefined) page = 0;
 
   let result;
 
   if (sortTarget === "별점순") {
-    result = await postingModel.find({ mentormajor: targetCategory }).sort({ star: -1 });
+    result = await postingModel.find({ mentormajor: targetCategory }).sort({ staravg: -1 });
   } else {
     // 최신순
     result = await postingModel.find({ mentormajor: targetCategory }).sort({ date: -1 });
