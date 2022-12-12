@@ -34,7 +34,7 @@ function MenteePart({ data }) {
           className="flex items-center justify-start p-3 border border-gray-200 rounded-lg"
         >
           <figure className="w-16 h-16 rounded-full overflow-hidden">
-            <img src="/mentoring.jpeg" alt="프로필 이미지" className="w-full h-full" />
+            <img src={mentor.menteeProfile} alt="프로필 이미지" className="w-full h-full" />
           </figure>
           <h3 className="text-xl font-bold pl-5 flex-1">{mentor.mentorNickname}</h3>
           <div className="space-x-2 flex items-center">
